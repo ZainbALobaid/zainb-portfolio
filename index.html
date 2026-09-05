@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zainb Alobaid</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        canvas:  'rgb(var(--canvas) / <alpha-value>)',
+        surface: 'rgb(var(--surface) / <alpha-value>)',
+        card:    'rgb(var(--card) / <alpha-value>)',
+        text:    'rgb(var(--text) / <alpha-value>)',
+        body:    'rgb(var(--body) / <alpha-value>)',
+        muted:   'rgb(var(--muted) / <alpha-value>)',
+        border:  'rgb(var(--border) / <alpha-value>)',
+        bdark:   'rgb(var(--bdark) / <alpha-value>)',
+        accent:  'rgb(var(--accent) / <alpha-value>)',
+        coral:   'rgb(var(--coral) / <alpha-value>)',
+      },
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+        mono: ['"JetBrains Mono"', '"Fira Code"', 'monospace'],
+      },
+    },
+  },
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light;
+    --canvas: 252 250 247;
+    --surface: 246 241 249;
+    --card: 239 231 246;
+    --text: 37 30 42;
+    --body: 91 82 98;
+    --muted: 130 118 140;
+    --border: 226 216 230;
+    --bdark: 191 173 199;
+    --accent: 124 58 237;
+    --coral: 225 74 108;
+  }
+  html.dark {
+    color-scheme: dark;
+    --canvas: 13 15 20;
+    --surface: 20 23 31;
+    --card: 29 32 43;
+    --text: 246 241 249;
+    --body: 190 186 199;
+    --muted: 143 138 153;
+    --border: 48 51 63;
+    --bdark: 91 83 105;
+    --accent: 167 139 250;
+    --coral: 251 113 133;
+  }
+  html { scroll-padding-top: 72px; }
+  body { background:rgb(var(--canvas)); transition:background-color .35s ease,color .35s ease; }
+  header, #mobile-menu, section, footer, .bg-surface, .bg-white, .bg-card {
+    transition:background-color .35s ease,border-color .35s ease,color .35s ease;
+  }
+  html.dark .bg-white { background-color:rgb(var(--card)); }
+  html.dark .bg-white\/90 { background-color:rgb(var(--canvas) / .9); }
+  html.dark #mobile-menu { background-color:rgb(var(--canvas)); }
+
+  .hero-wrap { position:relative; isolation:isolate; }
+  .hero-orb { position:absolute; border-radius:999px; filter:blur(4px); z-index:-1; opacity:.72; }
+  .orb-one { width:210px; height:210px; right:8%; top:22%; background:linear-gradient(135deg,rgb(var(--accent)/.42),rgb(var(--coral)/.14)); animation:floatOrb 7s ease-in-out infinite; }
+  .orb-two { width:90px; height:90px; right:30%; top:15%; background:rgb(var(--coral)/.22); animation:floatOrb 6s 1s ease-in-out infinite reverse; }
+  .accent-text { color:rgb(var(--accent)); }
+  .type-cursor { display:inline-block; width:3px; height:.82em; margin-left:.1em; background:rgb(var(--coral)); vertical-align:-.02em; animation:blink .8s steps(1) infinite; }
+  .theme-toggle { width:42px; height:42px; border-radius:999px; display:grid; place-items:center; border:1px solid rgb(var(--border)); background:rgb(var(--surface)); color:rgb(var(--text)); }
+  .theme-toggle:hover { border-color:rgb(var(--accent)); color:rgb(var(--accent)); transform:translateY(-1px); }
+  .sun-icon { display:none; }
+  html.dark .sun-icon { display:block; }
+  html.dark .moon-icon { display:none; }
+  .color-rule { height:4px; background:linear-gradient(90deg,rgb(var(--accent)),rgb(var(--coral)),#f59e0b); }
+  .project-row { position:relative; overflow:hidden; }
+  .project-row::before { content:''; position:absolute; inset:0 auto 0 0; width:4px; background:linear-gradient(rgb(var(--accent)),rgb(var(--coral))); transform:scaleY(0); transform-origin:bottom; transition:transform .28s ease; }
+  .project-row:hover::before { transform:scaleY(1); }
+  .project-row:hover h3 { color:rgb(var(--accent)); transform:translateX(5px); }
+  .project-row h3 { transition:color .25s ease,transform .25s ease; }
+  .cert-card:hover { transform:translateY(-3px); box-shadow:0 12px 30px rgb(var(--accent)/.10); }
+
+  .reveal { opacity:0; transform:translateY(14px); transition:opacity .6s ease, transform .6s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+
+  .proj-link { position:relative; display:inline-flex; align-items:center; gap:6px; }
+  .proj-link::after { content:''; position:absolute; left:0; bottom:-1px; width:0; height:1px; background:#111827; transition:width .25s ease; }
+  .proj-link:hover::after { width:100%; }
+
+  .nav-a { position:relative; }
+  .nav-a::after { content:''; position:absolute; left:0; bottom:-2px; width:0; height:1px; background:#111827; transition:width .2s ease; }
+  .nav-a:hover::after { width:100%; }
+
+  @keyframes fadeUpK {
+    from { opacity:0; transform:translateY(12px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  @keyframes blink { 50% { opacity:0; } }
+  @keyframes floatOrb { 50% { transform:translate3d(0,-14px,0) scale(1.04); } }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important; }
+    .reveal { opacity:1; transform:none; }
+  }
+</style>
+</head>
+<body class="text-text font-sans antialiased overflow-x-hidden">
+
+<!-- ── NAV ── -->
+<div class="fixed top-0 left-0 right-0 z-[60] color-rule"></div>
+<header class="fixed top-1 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm border-b border-border">
+  <nav class="max-w-5xl mx-auto px-6 md:px-10 h-[68px] flex items-center justify-between">
+    <a href="#" class="font-sans font-bold text-sm text-text tracking-tight">Zainb Alobaid</a>
+    <div class="flex items-center gap-4">
+    <ul class="hidden md:flex items-center gap-7 list-none">
+      <li><a href="#about"      class="nav-a font-mono text-[11px] text-body hover:text-text transition-colors uppercase tracking-widest">About</a></li>
+      <li><a href="#skills"     class="nav-a font-mono text-[11px] text-body hover:text-text transition-colors uppercase tracking-widest">Skills</a></li>
+      <li><a href="#experience" class="nav-a font-mono text-[11px] text-body hover:text-text transition-colors uppercase tracking-widest">Experience</a></li>
+      <li><a href="#projects"   class="nav-a font-mono text-[11px] text-body hover:text-text transition-colors uppercase tracking-widest">Projects</a></li>
+      <li><a href="#education"  class="nav-a font-mono text-[11px] text-body hover:text-text transition-colors uppercase tracking-widest">Education</a></li>
+      <li><a href="#contact"    class="font-mono text-[11px] uppercase tracking-widest px-4 py-1.5 bg-accent text-white rounded hover:bg-coral transition-colors">Contact</a></li>
+    </ul>
+    <button class="theme-toggle" type="button" aria-label="Switch color theme" title="Switch light or dark mode">
+      <svg class="moon-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>
+      <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    </button>
+    <button id="nav-toggle" class="md:hidden flex flex-col gap-1.5 p-1" aria-label="Menu">
+      <span class="block w-5 h-px bg-text rounded"></span>
+      <span class="block w-5 h-px bg-text rounded"></span>
+      <span class="block w-4 h-px bg-muted rounded"></span>
+    </button>
+    </div>
+  </nav>
+</header>
+
+<!-- Mobile menu -->
+<div id="mobile-menu" class="hidden fixed top-[68px] left-0 right-0 z-40 bg-white border-b border-border px-6 py-5 flex-col gap-4">
+  <a href="#about"      class="font-mono text-[11px] uppercase tracking-widest text-body hover:text-text transition-colors">About</a>
+  <a href="#skills"     class="font-mono text-[11px] uppercase tracking-widest text-body hover:text-text transition-colors">Skills</a>
+  <a href="#experience" class="font-mono text-[11px] uppercase tracking-widest text-body hover:text-text transition-colors">Experience</a>
+  <a href="#projects"   class="font-mono text-[11px] uppercase tracking-widest text-body hover:text-text transition-colors">Projects</a>
+  <a href="#education"  class="font-mono text-[11px] uppercase tracking-widest text-body hover:text-text transition-colors">Education</a>
+  <a href="#contact"    class="font-mono text-[11px] uppercase tracking-widest text-body hover:text-text transition-colors">Contact</a>
+</div>
+
+<!-- ── HERO ── -->
+<section class="hero-wrap max-w-5xl mx-auto px-6 md:px-10 pt-40 pb-28 min-h-[720px] flex items-center">
+  <span class="hero-orb orb-one" aria-hidden="true"></span>
+  <span class="hero-orb orb-two" aria-hidden="true"></span>
+  <div class="max-w-3xl">
+    <p class="font-mono text-xs text-muted tracking-[3px] uppercase mb-8"
+       style="opacity:0;animation:fadeUpK .5s .05s forwards ease;">
+      Open to Opportunities
+    </p>
+    <h1 class="font-sans font-extrabold leading-[1.08] tracking-tight text-text mb-4"
+        style="font-size:clamp(2.7rem,6.2vw,5.3rem);opacity:0;animation:fadeUpK .65s .15s forwards ease;">
+      Hi, I'm<br><span id="typed-name" class="accent-text" aria-label="Zainb Alobaid"></span><span class="type-cursor" aria-hidden="true"></span>
+    </h1>
+    <p class="font-mono text-sm md:text-base uppercase tracking-[.22em] text-text mb-6" style="opacity:0;animation:fadeUpK .55s .24s forwards ease;">Computer Specialist</p>
+    <p class="text-[17px] leading-[1.85] text-body max-w-xl mb-10"
+       style="opacity:0;animation:fadeUpK .55s .3s forwards ease;">
+      Computer Science graduate with practical experience in IT support, networking,
+      web development, and Firebase-based applications. Currently expanding my skills
+      through hands-on projects and continuous learning.
+    </p>
+    <div class="flex flex-wrap gap-3"
+         style="opacity:0;animation:fadeUpK .5s .45s forwards ease;">
+      <a href="#projects"
+         class="font-mono text-xs uppercase tracking-widest px-6 py-3 bg-accent text-white rounded
+                hover:bg-coral transition-colors duration-200">
+        View My Work →
+      </a>
+      <a href="#about"
+         class="font-mono text-xs uppercase tracking-widest px-6 py-3 border border-border text-body rounded
+                hover:border-bdark hover:text-text transition-all duration-200">
+        About Me
+      </a>
+      <a href="ZAINABALOBAID_CV.pdf" target="_blank"
+         class="font-mono text-xs uppercase tracking-widest px-6 py-3 border border-border text-body rounded
+                hover:border-bdark hover:text-text transition-all duration-200 flex items-center gap-2">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+        View CV
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS ── -->
+<div class="border-t border-b border-border bg-surface">
+  <div class="max-w-5xl mx-auto px-6 md:px-10 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
+    <div class="reveal">
+      <p class="font-sans font-bold text-2xl text-text">B.Sc.</p>
+      <p class="font-mono text-xs text-muted mt-1 tracking-wide">Computer Science</p>
+    </div>
+    <div class="reveal">
+      <p class="font-sans font-bold text-2xl text-text">SCE</p>
+      <p class="font-mono text-xs text-muted mt-1 tracking-wide">Computer Specialist</p>
+    </div>
+    <div class="reveal">
+      <p class="font-sans font-bold text-2xl text-text">280h</p>
+      <p class="font-mono text-xs text-muted mt-1 tracking-wide">Training Hours</p>
+    </div>
+    <div class="reveal">
+      <p class="font-sans font-bold text-2xl text-text">6</p>
+      <p class="font-mono text-xs text-muted mt-1 tracking-wide">Certifications</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── ABOUT ── -->
+<section id="about" class="max-w-5xl mx-auto px-6 md:px-10 py-24">
+  <div class="grid md:grid-cols-[220px_1fr] gap-14 items-start">
+    <div class="reveal">
+      <p class="font-mono text-[10px] tracking-[3px] uppercase text-muted mb-2">Who I Am</p>
+      <h2 class="font-sans font-bold text-2xl text-text">About Me</h2>
+    </div>
+    <div class="reveal space-y-6">
+      <p class="text-[16px] leading-[1.9] text-body">
+        I'm <strong class="text-text font-semibold">Zainb Alobaid</strong>, a Computer Science graduate from
+        Saudi Electronic University. Through academic projects and cooperative training at Bin Quraya,
+        I gained practical experience in web development, networking, Firebase, and IT support.
+      </p>
+      <p class="text-[16px] leading-[1.9] text-body">
+        I hold a professional classification as a <strong class="text-text font-semibold">Computer Specialist</strong>
+        from the Saudi Council of Engineers, and I enjoy building practical digital solutions
+        while continuously developing my technical skills.
+      </p>
+
+      <!-- tag row -->
+      <div class="flex flex-wrap gap-2 pt-2">
+        <span class="font-mono text-[11px] px-3 py-1.5 border border-border rounded text-body">Web Development</span>
+        <span class="font-mono text-[11px] px-3 py-1.5 border border-border rounded text-body">Networking</span>
+        <span class="font-mono text-[11px] px-3 py-1.5 border border-border rounded text-body">Firebase</span>
+        <span class="font-mono text-[11px] px-3 py-1.5 border border-border rounded text-body">IT Support</span>
+        <span class="font-mono text-[11px] px-3 py-1.5 border border-border rounded text-body">Java</span>
+        <span class="font-mono text-[11px] px-3 py-1.5 border border-border rounded text-body">Git &amp; GitHub</span>
+      </div>
+
+      <!-- 4 cards -->
+      <div class="grid grid-cols-2 gap-3 pt-2">
+        <div class="bg-surface border border-border rounded-lg p-4 hover:border-bdark transition-colors">
+          <p class="font-mono text-[9px] uppercase tracking-[2px] text-muted mb-1.5">Degree</p>
+          <p class="text-sm font-semibold text-text">Bachelor of Computer Science</p>
+        </div>
+        <div class="bg-surface border border-border rounded-lg p-4 hover:border-bdark transition-colors">
+          <p class="font-mono text-[9px] uppercase tracking-[2px] text-muted mb-1.5">University</p>
+          <p class="text-sm font-semibold text-text">Saudi Electronic University</p>
+        </div>
+        <div class="bg-surface border border-border rounded-lg p-4 hover:border-bdark transition-colors">
+          <p class="font-mono text-[9px] uppercase tracking-[2px] text-muted mb-1.5">Classification</p>
+          <p class="text-sm font-semibold text-text">Computer Specialist — SCE</p>
+        </div>
+        <div class="bg-surface border border-border rounded-lg p-4 hover:border-bdark transition-colors">
+          <p class="font-mono text-[9px] uppercase tracking-[2px] text-muted mb-1.5">Additional</p>
+          <p class="text-sm font-semibold text-text">Diploma in Human Resources</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="border-t border-border"></div>
+
+<!-- ── SKILLS ── -->
+<section id="skills" class="bg-surface">
+<div class="max-w-5xl mx-auto px-6 md:px-10 py-24">
+  <div class="grid md:grid-cols-[220px_1fr] gap-14 items-start">
+    <div class="reveal">
+      <p class="font-mono text-[10px] tracking-[3px] uppercase text-muted mb-2">What I Know</p>
+      <h2 class="font-sans font-bold text-2xl text-text">Technical Skills</h2>
+    </div>
+    <div class="reveal grid sm:grid-cols-2 gap-8">
+      <div>
+        <p class="font-mono text-[10px] tracking-[2px] uppercase text-muted pb-3 mb-4 border-b border-border">Web Development</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="font-mono text-[11px] px-3 py-1.5 bg-white border border-border rounded text-body hover:border-bdark hover:text-text transition-all cursor-default">HTML</span>
+          <span class="font-mono text-[11px] px-3 py-1.5 bg-white border border-border rounded text-body hover:border-bdark hover:text-text transition-all cursor-default">CSS</span>
+          <span class="font-mono text-[11px] px-3 py-1.5 bg-white border border-border rounded text-body hover:border-bdark hover:text-text transition-all cursor-default">JavaScript</span>
+          <span class="font-mono text-[11px] px-3 py-1.5 bg-white border border-border rounded text-body hover:border-bdark hover:text-text transition-all cursor-default">Framer</span>
+        </div>
+      </div>
+      <div>
+        <p class="font-mono text-[10px] tracking-[2px] uppercase text-muted pb-3 mb-4 border-b border-border">Programming &amp; Database</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="font-mono text-[11px] px-3 py-1.5 bg-white border border-border rounded text-body hover:border-bdark hover:text-text transition-all cursor-default">Java</span>
+          <span class="font-mono text-[11px] px-3 py-1.5 bg-white border border-border rounded text-body hover:border-bdark hover:text-text transition-all cursor-default">Firebase</span>
+          <span class="font-mono text-[11px] px-3 py-1.5 bg-white border border-border rounded text-body hover:border-bdark hover:text-text transition-all cursor-default">Firestore</span>
+        </div>
+      </div>
+      <div>
+        <p class="font-mono text-[10px] tracking-[2px] uppercase text-muted pb-3 mb-4 border-b border-border">IT Support</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="font-mono text-[11px] px-3 py-1.5 bg-white border border-border rounded text-body hover:border-bdark hover:text-text transition-all cursor-default">Windows Installation</span>
+          <span class="font-mono text-[11px] px-3 py-1.5 bg-white border border-border rounded text-body hover:border-bdark hover:text-text transition-all cursor-default">Software Installation</span>
+          <span class="font-mono text-[11px] px-3 py-1.5 bg-white border border-border rounded text-body hover:border-bdark hover:text-text transition-all cursor-default">Troubleshooting</span>
+        </div>
+      </div>
+      <div>
+        <p class="font-mono text-[10px] tracking-[2px] uppercase text-muted pb-3 mb-4 border-b border-border">Networking &amp; Tools</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="font-mono text-[11px] px-3 py-1.5 bg-white border border-border rounded text-body hover:border-bdark hover:text-text transition-all cursor-default">Networking Fundamentals</span>
+          <span class="font-mono text-[11px] px-3 py-1.5 bg-white border border-border rounded text-body hover:border-bdark hover:text-text transition-all cursor-default">Cisco Packet Tracer</span>
+          <span class="font-mono text-[11px] px-3 py-1.5 bg-white border border-border rounded text-body hover:border-bdark hover:text-text transition-all cursor-default">IP Addressing</span>
+          <span class="font-mono text-[11px] px-3 py-1.5 bg-white border border-border rounded text-body hover:border-bdark hover:text-text transition-all cursor-default">Git</span>
+          <span class="font-mono text-[11px] px-3 py-1.5 bg-white border border-border rounded text-body hover:border-bdark hover:text-text transition-all cursor-default">GitHub</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="border-t border-border"></div>
+
+<!-- ── EXPERIENCE ── -->
+<section id="experience" class="max-w-5xl mx-auto px-6 md:px-10 py-24">
+  <div class="grid md:grid-cols-[220px_1fr] gap-14 items-start">
+    <div class="reveal">
+      <p class="font-mono text-[10px] tracking-[3px] uppercase text-muted mb-2">Where I've Worked</p>
+      <h2 class="font-sans font-bold text-2xl text-text">Experience</h2>
+    </div>
+    <div class="reveal">
+      <!-- company line -->
+      <div class="flex items-start justify-between gap-4 mb-1">
+        <div>
+          <span class="font-mono text-xs text-muted">Bin Quraya Group</span>
+          <span class="font-mono text-xs text-muted ml-2">·</span>
+          <span class="font-mono text-xs text-muted ml-2">Jun 2025 – Aug 2025</span>
+          <span class="font-mono text-xs text-muted ml-2">·</span>
+          <span class="font-mono text-xs text-muted ml-2">280 Hours</span>
+        </div>
+        <span class="font-mono text-[10px] px-3 py-1 border border-border rounded-full text-muted whitespace-nowrap">
+          Cooperative Training
+        </span>
+      </div>
+      <h3 class="font-sans font-bold text-xl text-text mt-3 mb-4">IT Cooperative Trainee</h3>
+      <p class="text-[15.5px] leading-relaxed text-body mb-6">
+        Completed cooperative training within a professional IT environment, supporting computer preparation,
+        Windows installation and configuration, software installation, basic troubleshooting,
+        networking tasks, and technical documentation.
+      </p>
+      <ul class="space-y-2.5">
+        <li class="flex items-start gap-3 text-[14.5px] text-body">
+          <span class="text-muted mt-0.5 shrink-0">—</span>Prepared computers for employee use.
+        </li>
+        <li class="flex items-start gap-3 text-[14.5px] text-body">
+          <span class="text-muted mt-0.5 shrink-0">—</span>Installed and configured Windows and required software.
+        </li>
+        <li class="flex items-start gap-3 text-[14.5px] text-body">
+          <span class="text-muted mt-0.5 shrink-0">—</span>Assisted with hardware and software troubleshooting.
+        </li>
+        <li class="flex items-start gap-3 text-[14.5px] text-body">
+          <span class="text-muted mt-0.5 shrink-0">—</span>Supported basic networking tasks.
+        </li>
+        <li class="flex items-start gap-3 text-[14.5px] text-body">
+          <span class="text-muted mt-0.5 shrink-0">—</span>Documented completed technical work.
+        </li>
+      </ul>
+      <div class="flex flex-wrap gap-2 mt-5">
+        <span class="font-mono text-[10px] px-2.5 py-1 border border-border rounded text-muted">Windows OS</span>
+        <span class="font-mono text-[10px] px-2.5 py-1 border border-border rounded text-muted">IT Support</span>
+        <span class="font-mono text-[10px] px-2.5 py-1 border border-border rounded text-muted">Networking</span>
+        <span class="font-mono text-[10px] px-2.5 py-1 border border-border rounded text-muted">Technical Documentation</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="border-t border-border"></div>
+
+<!-- ── PROJECTS ── -->
+<section id="projects" class="bg-surface">
+<div class="max-w-5xl mx-auto px-6 md:px-10 py-24">
+  <div class="grid md:grid-cols-[220px_1fr] gap-14 items-start">
+    <div class="reveal">
+      <p class="font-mono text-[10px] tracking-[3px] uppercase text-muted mb-2">Hand-Coded Work</p>
+      <h2 class="font-sans font-bold text-2xl text-text">Projects</h2>
+    </div>
+    <div class="reveal space-y-1">
+
+      <!-- Madarek -->
+      <div class="project-row group py-7 border-b border-border hover:bg-card px-5 -mx-4 rounded-lg transition-colors duration-200">
+        <div class="flex flex-wrap justify-between items-start gap-3 mb-3">
+          <div>
+            <span class="font-mono text-[10px] uppercase tracking-widest text-muted">Graduation Project</span>
+            <span class="font-mono text-[10px] text-muted mx-2">·</span>
+            <span class="font-mono text-[10px] uppercase tracking-widest text-muted">Android App</span>
+          </div>
+        </div>
+        <h3 class="font-sans font-bold text-xl text-text mb-2">Madarek</h3>
+        <p class="text-[15px] text-body leading-relaxed mb-4">
+          An Android application to support book discovery and interaction between readers and publishers.
+          Includes user authentication, book listings, comments, user profiles, and Firebase-based data management.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="font-mono text-[10px] px-2.5 py-1 border border-border bg-white rounded text-muted">Java</span>
+          <span class="font-mono text-[10px] px-2.5 py-1 border border-border bg-white rounded text-muted">Android</span>
+          <span class="font-mono text-[10px] px-2.5 py-1 border border-border bg-white rounded text-muted">Firebase</span>
+          <span class="font-mono text-[10px] px-2.5 py-1 border border-border bg-white rounded text-muted">Firestore</span>
+          <span class="font-mono text-[10px] px-2.5 py-1 border border-border bg-white rounded text-muted">Authentication</span>
+        </div>
+      </div>
+
+      <!-- Artful Home -->
+      <div class="project-row group py-7 border-b border-border hover:bg-card px-5 -mx-4 rounded-lg transition-colors duration-200">
+        <div class="flex flex-wrap justify-between items-start gap-3 mb-3">
+          <div>
+            <span class="font-mono text-[10px] uppercase tracking-widest text-muted">Academic Project</span>
+            <span class="font-mono text-[10px] text-muted mx-2">·</span>
+            <span class="font-mono text-[10px] uppercase tracking-widest text-muted">Front-End Website</span>
+          </div>
+        </div>
+        <h3 class="font-sans font-bold text-xl text-text mb-2">Artful Home</h3>
+        <p class="text-[15px] text-body leading-relaxed mb-4">
+          An academic front-end website for browsing furniture and home décor products.
+          Includes product pages, navigation, and sign-in and sign-up forms.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="font-mono text-[10px] px-2.5 py-1 border border-border bg-white rounded text-muted">HTML</span>
+          <span class="font-mono text-[10px] px-2.5 py-1 border border-border bg-white rounded text-muted">CSS</span>
+          <span class="font-mono text-[10px] px-2.5 py-1 border border-border bg-white rounded text-muted">JavaScript</span>
+          <span class="font-mono text-[10px] px-2.5 py-1 border border-border bg-white rounded text-muted">Web Forms</span>
+        </div>
+      </div>
+
+      <!-- Network Design -->
+      <div class="project-row group py-7 hover:bg-card px-5 -mx-4 rounded-lg transition-colors duration-200">
+        <div class="flex flex-wrap justify-between items-start gap-3 mb-3">
+          <div>
+            <span class="font-mono text-[10px] uppercase tracking-widest text-muted">Academic Project</span>
+            <span class="font-mono text-[10px] text-muted mx-2">·</span>
+            <span class="font-mono text-[10px] uppercase tracking-widest text-muted">Networking</span>
+          </div>
+        </div>
+        <h3 class="font-sans font-bold text-xl text-text mb-2">Network Design</h3>
+        <p class="text-[15px] text-body leading-relaxed mb-4">
+          Designed and configured a network containing multiple LANs, routers, and switches using
+          Cisco Packet Tracer. Included IP addressing, device configuration, and connectivity testing.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <span class="font-mono text-[10px] px-2.5 py-1 border border-border bg-white rounded text-muted">Cisco Packet Tracer</span>
+          <span class="font-mono text-[10px] px-2.5 py-1 border border-border bg-white rounded text-muted">IP Addressing</span>
+          <span class="font-mono text-[10px] px-2.5 py-1 border border-border bg-white rounded text-muted">LAN</span>
+          <span class="font-mono text-[10px] px-2.5 py-1 border border-border bg-white rounded text-muted">Routers</span>
+          <span class="font-mono text-[10px] px-2.5 py-1 border border-border bg-white rounded text-muted">Switches</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</section>
+
+<div class="border-t border-border"></div>
+
+<!-- ── EDUCATION ── -->
+<section id="education" class="max-w-5xl mx-auto px-6 md:px-10 py-24">
+  <div class="grid md:grid-cols-[220px_1fr] gap-14 items-start">
+    <div class="reveal">
+      <p class="font-mono text-[10px] tracking-[3px] uppercase text-muted mb-2">Background</p>
+      <h2 class="font-sans font-bold text-2xl text-text">Education &amp;<br>Certifications</h2>
+    </div>
+    <div class="reveal space-y-8">
+
+      <!-- Degrees -->
+      <div class="space-y-3">
+        <div class="border border-border rounded-lg px-5 py-4 bg-surface hover:border-bdark transition-colors">
+          <p class="font-sans font-semibold text-[15px] text-text">Bachelor of Computer Science</p>
+          <p class="font-mono text-xs text-muted mt-1">Saudi Electronic University &nbsp;·&nbsp; 2026</p>
+        </div>
+        <div class="border border-border rounded-lg px-5 py-4 bg-surface hover:border-bdark transition-colors">
+          <p class="font-sans font-semibold text-[15px] text-text">Computer Specialist</p>
+          <p class="font-mono text-xs text-muted mt-1">Saudi Council of Engineers (SCE) &nbsp;·&nbsp; Valid until July 2027</p>
+        </div>
+      </div>
+
+      <!-- Certs -->
+      <div>
+        <p class="font-mono text-[10px] tracking-[3px] uppercase text-muted mb-4">Certifications</p>
+        <div class="grid sm:grid-cols-2 gap-3">
+          <div class="cert-card border border-border rounded-lg p-4 hover:border-accent hover:bg-surface transition-all">
+            <p class="font-sans font-semibold text-sm text-text">Introduction to Data Analysis</p>
+            <p class="font-mono text-[11px] text-muted mt-1">Satr</p>
+            <p class="font-mono text-[10px] text-[#9CA3AF] mt-0.5">August 2026</p>
+          </div>
+          <div class="cert-card border border-border rounded-lg p-4 hover:border-accent hover:bg-surface transition-all">
+            <p class="font-sans font-semibold text-sm text-text">Artificial Intelligence and Data</p>
+            <p class="font-mono text-[11px] text-muted mt-1">Saudi Digital Academy (SDA)</p>
+            <p class="font-mono text-[10px] text-[#9CA3AF] mt-0.5">May 2026</p>
+          </div>
+          <div class="cert-card border border-border rounded-lg p-4 hover:border-accent hover:bg-surface transition-all">
+            <p class="font-sans font-semibold text-sm text-text">Digital Business</p>
+            <p class="font-mono text-[11px] text-muted mt-1">Saudi Digital Academy (SDA)</p>
+            <p class="font-mono text-[10px] text-[#9CA3AF] mt-0.5">December 2025</p>
+          </div>
+          <div class="cert-card border border-border rounded-lg p-4 hover:border-accent hover:bg-surface transition-all">
+            <p class="font-sans font-semibold text-sm text-text">Networking Devices and Initial Configuration</p>
+            <p class="font-mono text-[11px] text-muted mt-1">Cisco Networking Academy — Alaraab</p>
+            <p class="font-mono text-[10px] text-[#9CA3AF] mt-0.5">June 2025</p>
+          </div>
+          <div class="cert-card border border-border rounded-lg p-4 hover:border-accent hover:bg-surface transition-all">
+            <p class="font-sans font-semibold text-sm text-text">Learn Firebase</p>
+            <p class="font-mono text-[11px] text-muted mt-1">Scrimba / Coursera</p>
+            <p class="font-mono text-[10px] text-[#9CA3AF] mt-0.5">April 2025</p>
+          </div>
+          <div class="cert-card border border-border rounded-lg p-4 hover:border-accent hover:bg-surface transition-all">
+            <p class="font-sans font-semibold text-sm text-text">Front-End Web Development (HTML &amp; CSS)</p>
+            <p class="font-mono text-[11px] text-muted mt-1">Saudi Electronic University</p>
+            <p class="font-mono text-[10px] text-[#9CA3AF] mt-0.5">February 2023</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="border-t border-border"></div>
+
+
+<!-- ── CONTACT ── -->
+<section id="contact" class="max-w-5xl mx-auto px-6 md:px-10 py-24">
+  <div class="grid md:grid-cols-[220px_1fr] gap-14 items-start">
+    <div class="reveal">
+      <p class="font-mono text-[10px] tracking-[3px] uppercase text-muted mb-2">Get in Touch</p>
+      <h2 class="font-sans font-bold text-2xl text-text">Contact</h2>
+    </div>
+    <div class="reveal space-y-6">
+      <div class="flex gap-3">
+        <a href="mailto:zainabalobaid@gmail.com" title="Email"
+           class="flex items-center justify-center w-10 h-10 border border-border rounded-lg text-muted
+                  hover:border-bdark hover:text-text hover:bg-surface transition-all">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        </a>
+        <a href="https://linkedin.com/in/zainabalobaid" target="_blank" title="LinkedIn"
+           class="flex items-center justify-center w-10 h-10 border border-border rounded-lg text-muted
+                  hover:border-bdark hover:text-text hover:bg-surface transition-all">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a>
+        <a href="https://github.com/ZainbALobaid" target="_blank" title="GitHub"
+           class="flex items-center justify-center w-10 h-10 border border-border rounded-lg text-muted
+                  hover:border-bdark hover:text-text hover:bg-surface transition-all">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer class="border-t border-border">
+  <div class="max-w-5xl mx-auto px-6 md:px-10 py-5 flex justify-between items-center flex-wrap gap-2">
+    <span class="font-mono text-[11px] text-muted">© Zainb Alobaid · 2026</span>
+    <a href="#" class="font-mono text-[11px] text-muted hover:text-text transition-colors">Back to top ↑</a>
+  </div>
+</footer>
+
+<script>
+// Light / dark theme. Use a saved preference, then the visitor's system setting.
+const root = document.documentElement;
+const savedTheme = localStorage.getItem('zainb-theme');
+const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+const setTheme = (theme) => {
+  root.classList.toggle('dark', theme === 'dark');
+  localStorage.setItem('zainb-theme', theme);
+  document.querySelectorAll('.theme-toggle').forEach(button => {
+    button.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    button.setAttribute('title', theme === 'dark' ? 'Light mode' : 'Dark mode');
+  });
+};
+setTheme(savedTheme || (systemDark ? 'dark' : 'light'));
+document.querySelectorAll('.theme-toggle').forEach(button => {
+  button.addEventListener('click', () => setTheme(root.classList.contains('dark') ? 'light' : 'dark'));
+});
+
+// Type the name once on arrival, inspired by a terminal cursor but kept subtle.
+const typedName = document.getElementById('typed-name');
+const nameText = 'Zainb Alobaid';
+if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  typedName.textContent = nameText;
+} else {
+  let letter = 0;
+  const typeName = () => {
+    typedName.textContent = nameText.slice(0, letter++);
+    if (letter <= nameText.length + 1) setTimeout(typeName, 105);
+  };
+  setTimeout(typeName, 450);
+}
+
+// Mobile nav
+const toggle = document.getElementById('nav-toggle');
+const menu   = document.getElementById('mobile-menu');
+toggle.addEventListener('click', () => menu.classList.toggle('hidden'));
+menu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => menu.classList.add('hidden')));
+
+// Scroll reveal
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
